@@ -48,38 +48,7 @@ pipeline {
                 }
             }
         }
-        
-       
-       
-     stage('DT create synthetic monitor') {
-     
-      steps {
-        
-        container("curl") {
-          script {
-            def status = dt_createUpdateSyntheticTest (
-              testName : "simpleproject.${env.APP_NAME}",
-              url : "http://ace-box:30001",
-              method : "GET",
-              location : "SYNTHETIC_LOCATION-11E87E37F89E10A3"
-            )
-          }
-        }
-      }
-    }
-       
-       
-       
-       
-       
-       
-       
-       
-       
-        
-        
-        
-
+  
         stage('Run tests') {
             steps {
                 build job: "3. Test",
