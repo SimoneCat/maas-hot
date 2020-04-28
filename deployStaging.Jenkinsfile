@@ -48,6 +48,35 @@ pipeline {
                 }
             }
         }
+        
+        stage('DT create synthetic monitor') {
+      when {
+          expression {
+          return env.BRANCH_NAME ==~ 'release/.*' || env.BRANCH_NAME ==~'master'
+          }
+      }
+      steps {
+        container("kubectl") {
+          script {
+            // Get IP of service
+            env.SERVICE_IP = sh(script: 'kubectl get svc ${APP_NAME} -n dev -o \'jsonpath={..status.loadBalancer.ingress..ip}\'', , returnStdout: true).trim()
+          }
+        }
+        container("curl") {
+          script {
+            def status = dt_createUpdateSyntheticTest (
+              testName : "MAAS_SYNTH.${env.APP_NAME}",
+              url : "http://${SERVICE_IP}/items",
+              method : "GET",
+              location : "SYNTHETIC_LOCATION-11E87E37F89E10A3"
+            )
+          }
+        }
+      }
+    }
+        
+        
+        
 
         stage('Run tests') {
             steps {
