@@ -49,20 +49,17 @@ pipeline {
             }
         }
         
-        stage('DT create synthetic monitor') {
-      
+       
+       
+     stage('DT create synthetic monitor') {
+     
       steps {
-        container("kubectl") {
-          script {
-            // Get IP of service
-            env.SERVICE_IP = sh(script: 'kubectl get svc ${APP_NAME} -n staging -o \'jsonpath={..status.loadBalancer.ingress..ip}\'', , returnStdout: true).trim()
-          }
-        }
+        
         container("curl") {
           script {
             def status = dt_createUpdateSyntheticTest (
-              testName : "MAAS_SYNTH.${env.APP_NAME}",
-              url : "http://${SERVICE_IP}/items",
+              testName : "simpleproject.${env.APP_NAME}",
+              url : "http://ace-box:30001",
               method : "GET",
               location : "SYNTHETIC_LOCATION-11E87E37F89E10A3"
             )
@@ -70,6 +67,15 @@ pipeline {
         }
       }
     }
+       
+       
+       
+       
+       
+       
+       
+       
+       
         
         
         
